@@ -40,6 +40,8 @@ class AuthController extends Controller
 
     public function login()
     {
+        $session = \Config\Services::session();
+
         if (session()->has('user')) {
             return redirect()->to('/song_page');
         }

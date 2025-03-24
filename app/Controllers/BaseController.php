@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
@@ -35,7 +34,7 @@ abstract class BaseController extends Controller
      *
      * @var list<string>
      */
-    protected $helpers = [];
+    protected $helpers = ['url', 'form'];
 
     /**
      * Be sure to declare properties for any property fetch you initialized.
@@ -50,6 +49,15 @@ abstract class BaseController extends Controller
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
+
+        // Start the session
+        $session = \Config\Services::session();
+        $session->start();
+
+        // Check if user is already logged in and redirect accordingly
+        if ($session->has('user') && current_url() === base_url('/')) {
+            return redirect()->to('/song_page');
+        }
 
         // Preload any models, libraries, etc, here.
 
