@@ -40,11 +40,19 @@ class AuthController extends Controller
 
     public function login()
     {
+        if (session()->has('user')) {
+            return redirect()->to('/song_page');
+        }
         return view('auth/login');
     }
 
     public function checkLogin()
     {
+        // If user is already logged in, redirect to the song page
+        if (session()->has('user')) {
+            return redirect()->to('/song_page');
+        }
+
         $userModel = new UserModel();
         $email     = $this->request->getPost('email');
         $password  = $this->request->getPost('password');
@@ -55,6 +63,7 @@ class AuthController extends Controller
             return redirect()->back()->with('error', 'Invalid email or password.');
         }
 
+        // Set user session upon successful login
         session()->set('user', $user);
 
         return redirect()->to('/song_page');
@@ -62,7 +71,9 @@ class AuthController extends Controller
 
     public function logout()
     {
+        // Destroy the session and redirect to login with a success message
         session()->destroy();
         return redirect()->to('/login')->with('success', 'Logged out successfully.');
     }
+
 }
